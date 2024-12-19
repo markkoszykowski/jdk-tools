@@ -26,12 +26,12 @@ inline std::optional<std::string_view> env(const std::string& key) {
 	return value == nullptr ? std::optional<std::string_view>{} : std::optional<std::string_view>{value};
 }
 
-inline std::filesystem::path tool(const char** argv, const std::filesystem::path java_home) {
+inline std::filesystem::path tool(const std::filesystem::path java_home, const char** argv) {
 	const std::filesystem::path tool{argv[0]};
 	return java_home / tool.filename();
 }
 
-inline std::string command(const int argc, const char** argv, const std::filesystem::path tool) {
+inline std::string command(const std::filesystem::path tool, const int argc, const char** argv) {
 	std::string command{tool};
 
 	for (int i = 1; i < argc; ++i) {
@@ -55,11 +55,11 @@ int main(const int argc, const char** argv) {
 		return -2;
 	}
 
-	const std::filesystem::path tool{::tool(argv, jdk)};
+	const std::filesystem::path tool{::tool(jdk, argv)};
 	if (!std::filesystem::exists(tool)) {
 		::java_home_error("is not a valid JDK");
 		return -3;
 	}
 
-	return std::system(::command(argc, argv, tool).c_str());
+	return std::system(::command(tool, argc, argv).c_str());
 }
