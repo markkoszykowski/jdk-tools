@@ -1,4 +1,4 @@
-CXXFLAGS := -std=c++23 -Wpedantic -Wextra -Wall -g
+CXXFLAGS := -std=c++23 -Wpedantic -Wextra -Wall
 
 SRC   := $(shell pwd)/src
 BIN   := $(shell pwd)/bin
