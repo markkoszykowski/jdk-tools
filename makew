@@ -1,0 +1,34 @@
+#!/bin/sh
+
+USAGE="Usage: ${0} [-h] [-v] [command...]"
+
+cd "$(dirname "${0}")" || exit 1
+
+HOMEBREW_PREFIX=$(brew --prefix)
+export CPATH="${HOMEBREW_PREFIX}/opt/binutils/include/:${HOMEBREW_PREFIX}/include/:${CPATH}"
+export LIBRARY_PATH="${HOMEBREW_PREFIX}/opt/binutils/lib/:${HOMEBREW_PREFIX}/lib/:${LIBRARY_PATH}"
+
+verbose=0
+opts=""
+for opt in "${@}"
+do
+	if [ "${opt}" = "-h" ]
+	then
+		echo "${USAGE}"
+		exit 0
+	elif [ "${opt}" = "-v" ]
+	then
+		verbose=1
+	else
+		opts="${opts} ${opt}"
+	fi
+done
+
+export CXX="${HOMEBREW_PREFIX}/bin/g++-14 -B${HOMEBREW_PREFIX}/opt/binutils/bin"
+if [ ${verbose} = 1 ]
+then
+	export CXX="${CXX} -v"
+fi
+
+# shellcheck disable=SC2086
+make ${opts}
