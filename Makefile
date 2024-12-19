@@ -13,17 +13,17 @@ endef
 
 .DEFAULT_GOAL=all
 .PHONY: all
-all: $(BINARIES)
+all: ${BINARIES}
 	@echo ""
 	@echo "Please add ${BIN} to your PATH"
 	@echo "i.e."
 	@echo "	export PATH=\"\$${PATH}:${BIN}\""
 	@echo ""
 
-$(BIN):
+${BIN}:
 	@mkdir -p "${BIN}"
 
-$(BINARIES): | $(BIN)
+${BINARIES}: | ${BIN}
 	$(build_binary)
 
 .PHONY: clean
