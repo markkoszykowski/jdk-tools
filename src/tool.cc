@@ -1,9 +1,13 @@
-#include <cstdlib>
+#include <unistd.h>
+
+#include <cerrno>
+#include <cstring>
 #include <filesystem>
 #include <iostream>
 #include <string>
 #include <string_view>
 #include <optional>
+#include <vector>
 
 
 constexpr std::string_view ANSI_ESCAPE{"\033["};
@@ -16,11 +20,13 @@ constexpr std::string_view RED{"31"};
 constexpr std::string JAVA_HOME{"JAVA_HOME"};
 
 
-inline std::ostream& java_home_error(const std::string_view message) {
-	return std::cerr << ANSI_ESCAPE << RED << ANSI_SGR << '\'' <<
-		ANSI_ESCAPE << BOLD << ANSI_SEPERATOR << RED << ANSI_SGR << JAVA_HOME <<
-		ANSI_ESCAPE << RED << ANSI_SGR << "\' " <<
-		message << ANSI_ESCAPE << RESET << ANSI_SGR << '\n';
+template<typename... Args>
+inline void java_home_error(Args&& ... args) {
+	std::cerr << ANSI_ESCAPE << RED << ANSI_SGR << '\'';
+	std::cerr << ANSI_ESCAPE << BOLD << ANSI_SEPERATOR << RED << ANSI_SGR << JAVA_HOME;
+	std::cerr << ANSI_ESCAPE << RED << ANSI_SGR << "\' ";
+	((std::cerr << args << ' '), ...);
+	std::cerr << ANSI_ESCAPE << RESET << ANSI_SGR << '\n';
 }
 
 inline std::optional<std::string_view> env(const std::string& key) {
@@ -28,23 +34,31 @@ inline std::optional<std::string_view> env(const std::string& key) {
 	return value == nullptr ? std::optional<std::string_view>{} : std::optional<std::string_view>{value};
 }
 
-inline std::filesystem::path tool(const std::filesystem::path java_home, const char** argv) {
+inline std::filesystem::path tool(const std::filesystem::path& java_home, const char* const* argv) {
 	const std::filesystem::path tool{argv[0]};
 	return java_home / tool.filename();
 }
 
-inline std::string command(const std::filesystem::path tool, const int argc, const char** argv) {
-	std::string command{tool};
+inline std::vector<const char*> args(const std::filesystem::path& tool, const int argc, const char* const* argv) {
+	std::vector<const char*> args{};
+	args.reserve(static_cast<std::size_t>(argc) + 1);
+
+	args.push_back(tool.c_str());
 
 	for (int i = 1; i < argc; ++i) {
-		command.push_back(' ');
-		command.append(argv[static_cast<std::size_t>(i)]);
+		args.push_back(argv[static_cast<std::size_t>(i)]);
 	}
 
-	return command;
+	args.push_back(nullptr);
+
+	return args;
 }
 
-int main(const int argc, const char** argv) {
+inline bool exec(const std::vector<const char*>& args) {
+	return ::execv(args[0], const_cast<char* const*>(args.data())) != -1;
+}
+
+int main(const int argc, const char* const* argv) {
 	const std::optional<std::string_view> java_home{::env(JAVA_HOME)};
 	if (!java_home.has_value()) {
 		::java_home_error("is not defined");
@@ -63,5 +77,11 @@ int main(const int argc, const char** argv) {
 		return -3;
 	}
 
-	return std::system(::command(tool, argc, argv).c_str());
+	const std::vector<const char*> args{::args(tool, argc, argv)};
+	if (!::exec(args)) {
+		::java_home_error("could not be executed", ':', std::strerror(errno));
+		return -4;
+	}
+
+	return 0;
 }
