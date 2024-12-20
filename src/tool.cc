@@ -58,6 +58,7 @@ inline int exec(const std::filesystem::path& tool, const int argc, const char* c
 	}
 	args.push_back(nullptr);
 
+	// https://stackoverflow.com/questions/190184/execv-and-const-ness
 	if (::execv(tool.c_str(), const_cast<char* const*>(args.data())) != -1) {
 		::error("Unknown error occurred");
 		std::exit(1);
