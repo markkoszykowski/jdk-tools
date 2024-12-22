@@ -19,10 +19,11 @@ constexpr std::string_view BOLD{"1"};
 constexpr std::string_view RED{"31"};
 
 constexpr std::string JAVA_HOME{"JAVA_HOME"};
+constexpr std::string_view BIN{"bin"};
 
 
 template<typename... Args>
-inline void error(Args&& ... args) {
+void error(Args&& ... args) {
 	std::cerr << ::ANSI_ESCAPE << ::RED << ::ANSI_SGR;
 	((std::cerr << args << ' '), ...);
 	std::cerr << ::ANSI_ESCAPE << ::RESET << ::ANSI_SGR;
@@ -30,7 +31,7 @@ inline void error(Args&& ... args) {
 }
 
 template<typename... Args>
-inline void java_home_error(Args&& ... args) {
+void java_home_error(Args&& ... args) {
 	std::cerr << ::ANSI_ESCAPE << ::RED << ::ANSI_SGR << '\'';
 	std::cerr << ::ANSI_ESCAPE << ::BOLD << ::ANSI_SEPERATOR << ::RED << ::ANSI_SGR << ::JAVA_HOME;
 	std::cerr << ::ANSI_ESCAPE << ::RED << ::ANSI_SGR << '\'';
@@ -45,7 +46,7 @@ inline std::optional<std::string_view> env(const std::string& key) {
 
 inline std::filesystem::path tool(const std::filesystem::path& java_home, const char* const* argv) {
 	const std::filesystem::path tool{argv[0]};
-	return java_home / tool.filename();
+	return java_home / BIN / tool.filename();
 }
 
 inline int exec(const std::filesystem::path& tool, const int argc, const char* const* argv) {
