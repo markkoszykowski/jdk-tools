@@ -11,12 +11,12 @@
 #include <vector>
 
 
-constexpr std::string_view ANSI_ESCAPE{"\033["};
+constexpr std::string_view ANSI_CSI{"\033["};
 constexpr char ANSI_SEPERATOR{';'};
 constexpr char ANSI_SGR{'m'};
-constexpr std::string_view RESET{"0"};
-constexpr std::string_view BOLD{"1"};
-constexpr std::string_view RED{"31"};
+constexpr std::string_view ANSI_RESET{"0"};
+constexpr std::string_view ANSI_BOLD{"1"};
+constexpr std::string_view ANSI_RED{"31"};
 
 constexpr std::string JAVA_HOME{"JAVA_HOME"};
 constexpr std::string_view BIN{"bin"};
@@ -24,17 +24,17 @@ constexpr std::string_view BIN{"bin"};
 
 template<typename... Args>
 void error(Args&& ... args) {
-	std::cerr << ::ANSI_ESCAPE << ::RED << ::ANSI_SGR;
+	std::cerr << ::ANSI_CSI << ::ANSI_RED << ::ANSI_SGR;
 	((std::cerr << args << ' '), ...);
-	std::cerr << ::ANSI_ESCAPE << ::RESET << ::ANSI_SGR;
+	std::cerr << ::ANSI_CSI << ::ANSI_RESET << ::ANSI_SGR;
 	std::cerr << '\n';
 }
 
 template<typename... Args>
 void java_home_error(Args&& ... args) {
-	std::cerr << ::ANSI_ESCAPE << ::RED << ::ANSI_SGR << '\'';
-	std::cerr << ::ANSI_ESCAPE << ::BOLD << ::ANSI_SEPERATOR << ::RED << ::ANSI_SGR << ::JAVA_HOME;
-	std::cerr << ::ANSI_ESCAPE << ::RED << ::ANSI_SGR << '\'';
+	std::cerr << ::ANSI_CSI << ::ANSI_RED << ::ANSI_SGR << '\'';
+	std::cerr << ::ANSI_CSI << ::ANSI_BOLD << ::ANSI_SEPERATOR << ::ANSI_RED << ::ANSI_SGR << ::JAVA_HOME;
+	std::cerr << ::ANSI_CSI << ::ANSI_RED << ::ANSI_SGR << '\'';
 	std::cerr << ' ';
 	::error(args...);
 }
