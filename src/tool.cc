@@ -5,9 +5,9 @@
 #include <cstring>
 #include <filesystem>
 #include <iostream>
+#include <optional>
 #include <string>
 #include <string_view>
-#include <optional>
 #include <vector>
 
 
@@ -23,7 +23,7 @@ constexpr std::string_view BIN{"bin"};
 
 
 template<typename... Args>
-void error(Args&& ... args) {
+void error(Args&&... args) {
 	std::cerr << ::ANSI_CSI << ::ANSI_RED << ::ANSI_SGR;
 	((std::cerr << args << ' '), ...);
 	std::cerr << ::ANSI_CSI << ::ANSI_RESET << ::ANSI_SGR;
@@ -31,7 +31,7 @@ void error(Args&& ... args) {
 }
 
 template<typename... Args>
-void java_home_error(Args&& ... args) {
+void java_home_error(Args&&... args) {
 	std::cerr << ::ANSI_CSI << ::ANSI_RED << ::ANSI_SGR << '\'';
 	std::cerr << ::ANSI_CSI << ::ANSI_BOLD << ::ANSI_SEPERATOR << ::ANSI_RED << ::ANSI_SGR << ::JAVA_HOME;
 	std::cerr << ::ANSI_CSI << ::ANSI_RED << ::ANSI_SGR << '\'';
