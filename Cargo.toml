@@ -1,0 +1,75 @@
+[package]
+name = "jdk-tools"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+libc = "0.2.170"
+
+[[bin]]
+name = "jar"
+path = "src/tool.rs"
+
+[[bin]]
+name = "java"
+path = "src/tool.rs"
+
+[[bin]]
+name = "javac"
+path = "src/tool.rs"
+
+[[bin]]
+name = "javadoc"
+path = "src/tool.rs"
+
+[[bin]]
+name = "javap"
+path = "src/tool.rs"
+
+[[bin]]
+name = "jcmd"
+path = "src/tool.rs"
+
+[[bin]]
+name = "jconsole"
+path = "src/tool.rs"
+
+[[bin]]
+name = "jdb"
+path = "src/tool.rs"
+
+[[bin]]
+name = "jdeps"
+path = "src/tool.rs"
+
+[[bin]]
+name = "jinfo"
+path = "src/tool.rs"
+
+[[bin]]
+name = "jmap"
+path = "src/tool.rs"
+
+[[bin]]
+name = "jmod"
+path = "src/tool.rs"
+
+[[bin]]
+name = "jps"
+path = "src/tool.rs"
+
+[[bin]]
+name = "jshell"
+path = "src/tool.rs"
+
+[[bin]]
+name = "jstack"
+path = "src/tool.rs"
+
+[[bin]]
+name = "jstat"
+path = "src/tool.rs"
+
+[[bin]]
+name = "keytool"
+path = "src/tool.rs"
