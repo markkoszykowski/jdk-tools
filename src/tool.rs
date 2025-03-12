@@ -58,7 +58,11 @@ macro_rules! c_string {
 }
 
 #[inline]
-fn tool<T: AsRef<OsStr>, U: AsRef<[T]>>(java_home: &Path, args: U) -> Option<OsString> {
+fn tool<T, U>(java_home: &Path, args: U) -> Option<OsString>
+where
+    T: AsRef<OsStr>,
+    U: AsRef<[T]>,
+{
     Some(
         java_home
             .join(BIN)
@@ -68,7 +72,11 @@ fn tool<T: AsRef<OsStr>, U: AsRef<[T]>>(java_home: &Path, args: U) -> Option<OsS
 }
 
 #[inline]
-fn execv<T: AsRef<OsStr>, U: AsRef<[T]>>(tool: &OsStr, args: U) {
+fn execv<T, U>(tool: &OsStr, args: U)
+where
+    T: AsRef<OsStr>,
+    U: AsRef<[T]>,
+{
     let tool: Box<CStr> = c_string!(tool).into_boxed_c_str();
     let args: Box<[Cow<CStr>]> = {
         let args: &[T] = args.as_ref();
