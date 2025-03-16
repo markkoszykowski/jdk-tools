@@ -1,12 +1,17 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 USAGE="Usage: ${0} [-h] [-v] [command...]"
 
 cd "$(dirname "${0}")" || exit 1
 
-HOMEBREW_PREFIX=$(brew --prefix)
-export CPATH="${HOMEBREW_PREFIX}/opt/binutils/include/:${HOMEBREW_PREFIX}/include/:${CPATH}"
-export LIBRARY_PATH="${HOMEBREW_PREFIX}/opt/binutils/lib/:${HOMEBREW_PREFIX}/lib/:${LIBRARY_PATH}"
+BREW_PREFIX=$(brew --prefix)
+BINUTILS_PREFIX=$(brew --prefix binutils)
+GCC_PREFIX=$(brew --prefix gcc)
+
+CPATH="${BINUTILS_PREFIX}/include/:${BREW_PREFIX}/include/:${CPATH}"
+export CPATH
+LIBRARY_PATH="${BINUTILS_PREFIX}/lib/:${BREW_PREFIX}/lib/:${LIBRARY_PATH}"
+export LIBRARY_PATH
 
 verbose=0
 opts=""
@@ -24,7 +29,9 @@ do
 	fi
 done
 
-export CXX="${HOMEBREW_PREFIX}/bin/g++-14 -B${HOMEBREW_PREFIX}/opt/binutils/bin"
+CXX="${GCC_PREFIX}/bin/g++-14 -B${BINUTILS_PREFIX}/bin"
+export CXX
+
 if [ ${verbose} = 1 ]
 then
 	export CXX="${CXX} -v"
