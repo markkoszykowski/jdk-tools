@@ -49,7 +49,7 @@ inline std::filesystem::path tool(const std::filesystem::path& java_home, const 
 	return java_home / BIN / tool.filename();
 }
 
-inline int exec(const std::filesystem::path& tool, const int argc, const char* const* argv) {
+inline void exec(const std::filesystem::path& tool, const int argc, const char* const* argv) {
 	std::vector<const char*> args{};
 	args.reserve(static_cast<std::size_t>(argc) + 1);
 
@@ -60,11 +60,11 @@ inline int exec(const std::filesystem::path& tool, const int argc, const char* c
 	args.push_back(nullptr);
 
 	// https://stackoverflow.com/questions/190184/execv-and-const-ness
-	if (::execv(tool.c_str(), const_cast<char* const*>(args.data())) != -1) {
+	if (::execv(tool.c_str(), const_cast<char * const*>(args.data())) == -1) {
+		::java_home_error("could not be executed", ':', std::strerror(errno));
+	} else {
 		::error("Unknown error occurred");
-		std::exit(1);
 	}
-	return errno;
 }
 
 int main(const int argc, const char* const* argv) {
@@ -86,8 +86,7 @@ int main(const int argc, const char* const* argv) {
 		return -3;
 	}
 
-	const int error{::exec(tool, argc, argv)};
-	::java_home_error("could not be executed", ':', std::strerror(error));
+	::exec(tool, argc, argv);
 
 	return -4;
 }
