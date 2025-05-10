@@ -63,12 +63,8 @@ where
     T: AsRef<OsStr>,
     U: AsRef<[T]>,
 {
-    Some(
-        java_home
-            .join(BIN)
-            .join(Path::new(args.as_ref().first()?).file_name()?)
-            .into_os_string(),
-    )
+    let tool: &Path = Path::new(args.as_ref().first()?);
+    Some(java_home.join(BIN).join(tool.file_name()?).into_os_string())
 }
 
 #[inline]
@@ -80,9 +76,9 @@ where
     let tool: Box<CStr> = c_string!(tool).into_boxed_c_str();
     let args: Box<[Cow<CStr>]> = {
         let args: &[T] = args.as_ref();
-        let mut argv: Vec<Cow<CStr>> = Vec::with_capacity(1 + args.len());
+        let mut argv: Vec<Cow<CStr>> = Vec::with_capacity(args.len());
         argv.push(Borrowed(&tool));
-        for arg in args {
+        for arg in &args[1..] {
             argv.push(Owned(c_string!(arg.as_ref())));
         }
         argv.into_boxed_slice()
@@ -96,10 +92,10 @@ where
         .chain([std::ptr::null()])
         .collect();
 
-    if unsafe { libc::execv(prog, argv.as_ptr()) } != -1 {
-        error!("Unknown error occurred");
-    } else {
+    if unsafe { libc::execv(prog, argv.as_ptr()) } == -1 {
         java_home_error!("could not be executed", ":", Error::last_os_error());
+    } else {
+        error!("Unknown error occurred");
     }
 }
 
@@ -130,7 +126,7 @@ fn main() -> ExitCode {
         }
     };
 
-    execv(&tool, &args[1..]);
+    execv(&tool, &args);
 
     ExitCode::FAILURE
 }
