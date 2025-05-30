@@ -49,8 +49,8 @@ macro_rules! c_string {
     ( $os_str:expr ) => {{
         match CString::new($os_str.as_encoded_bytes()) {
             Ok(os_str) => os_str,
-            Err(e) => {
-                java_home_error!("could not be executed", ":", e);
+            Err(error) => {
+                java_home_error!("could not be executed", ":", error);
                 return;
             }
         }
@@ -58,24 +58,21 @@ macro_rules! c_string {
 }
 
 #[inline]
-fn tool<T, U>(java_home: &Path, args: U) -> Option<OsString>
+fn tool<T>(java_home: &Path, args: &[T]) -> Option<OsString>
 where
     T: AsRef<OsStr>,
-    U: AsRef<[T]>,
 {
-    let tool: &Path = Path::new(args.as_ref().first()?);
+    let tool: &Path = Path::new(args.first()?);
     Some(java_home.join(BIN).join(tool.file_name()?).into_os_string())
 }
 
 #[inline]
-fn execv<T, U>(tool: &OsStr, args: U)
+fn execv<T>(tool: &OsStr, args: &[T])
 where
     T: AsRef<OsStr>,
-    U: AsRef<[T]>,
 {
     let tool: Box<CStr> = c_string!(tool).into_boxed_c_str();
     let args: Box<[Cow<CStr>]> = {
-        let args: &[T] = args.as_ref();
         let mut argv: Vec<Cow<CStr>> = Vec::with_capacity(args.len());
         argv.push(Borrowed(&tool));
         for arg in &args[1..] {
@@ -105,7 +102,7 @@ fn main() -> ExitCode {
         .collect();
 
     let java_home: Box<OsStr> = match std::env::var_os(JAVA_HOME) {
-        Some(x) => x.into_boxed_os_str(),
+        Some(var) => var.into_boxed_os_str(),
         None => {
             java_home_error!("is not defined");
             return ExitCode::FAILURE;
