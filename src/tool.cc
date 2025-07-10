@@ -41,7 +41,9 @@ void java_home_error(Args&&... args) {
 
 inline std::optional<std::string_view> env(const std::string& key) {
 	const char* value{std::getenv(key.c_str())};
-	return value == nullptr ? std::optional<std::string_view>{std::nullopt} : std::optional<std::string_view>{value};
+	return value == nullptr ?
+			std::optional<std::string_view>{std::nullopt} :
+			std::optional<std::string_view>{std::string_view{value}};
 }
 
 inline std::filesystem::path tool(const std::filesystem::path& java_home, const char* const* argv) {
@@ -51,7 +53,7 @@ inline std::filesystem::path tool(const std::filesystem::path& java_home, const 
 
 inline void exec(const std::filesystem::path& tool, const int argc, const char* const* argv) {
 	std::vector<const char*> args{};
-	args.reserve(static_cast<std::size_t>(argc) + 1);
+	args.reserve(static_cast<std::size_t>(argc) + 1U);
 
 	args.push_back(tool.c_str());
 	for (int i = 1; i < argc; ++i) {
@@ -60,7 +62,7 @@ inline void exec(const std::filesystem::path& tool, const int argc, const char* 
 	args.push_back(nullptr);
 
 	// https://stackoverflow.com/questions/190184/execv-and-const-ness
-	if (::execv(tool.c_str(), const_cast<char * const*>(args.data())) == -1) {
+	if (::execv(tool.c_str(), const_cast<char* const*>(args.data())) == -1) {
 		::java_home_error("could not be executed", ':', std::strerror(errno));
 	} else {
 		::error("Unknown error occurred");
