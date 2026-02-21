@@ -11,6 +11,10 @@ name = "jar"
 path = "src/tool.rs"
 
 [[bin]]
+name = "jarsigner"
+path = "src/tool.rs"
+
+[[bin]]
 name = "java"
 path = "src/tool.rs"
 
@@ -39,11 +43,31 @@ name = "jdb"
 path = "src/tool.rs"
 
 [[bin]]
+name = "jdeprscan"
+path = "src/tool.rs"
+
+[[bin]]
 name = "jdeps"
 path = "src/tool.rs"
 
 [[bin]]
+name = "jfr"
+path = "src/tool.rs"
+
+[[bin]]
+name = "jhsdb"
+path = "src/tool.rs"
+
+[[bin]]
+name = "jimage"
+path = "src/tool.rs"
+
+[[bin]]
 name = "jinfo"
+path = "src/tool.rs"
+
+[[bin]]
+name = "jlink"
 path = "src/tool.rs"
 
 [[bin]]
@@ -55,7 +79,19 @@ name = "jmod"
 path = "src/tool.rs"
 
 [[bin]]
+name = "jnativescan"
+path = "src/tool.rs"
+
+[[bin]]
+name = "jpackage"
+path = "src/tool.rs"
+
+[[bin]]
 name = "jps"
+path = "src/tool.rs"
+
+[[bin]]
+name = "jrunscript"
 path = "src/tool.rs"
 
 [[bin]]
@@ -71,5 +107,21 @@ name = "jstat"
 path = "src/tool.rs"
 
 [[bin]]
+name = "jstatd"
+path = "src/tool.rs"
+
+[[bin]]
+name = "jwebserver"
+path = "src/tool.rs"
+
+[[bin]]
 name = "keytool"
+path = "src/tool.rs"
+
+[[bin]]
+name = "rmiregistry"
+path = "src/tool.rs"
+
+[[bin]]
+name = "serialver"
 path = "src/tool.rs"
