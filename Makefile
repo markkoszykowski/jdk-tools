@@ -1,11 +1,11 @@
-CXXFLAGS := -std=c++23 -Wpedantic -Wextra -Wall
+CXXFLAGS := -std=c++26 -Wpedantic -Wextra -Wall
 
 SRC   := $(shell pwd)/src
 BIN   := $(shell pwd)/bin
 
 TOOL := tool.cc
 
-BINARIES := jar java javac javadoc javap jcmd jconsole jdb jdeps jinfo jmap jmod jps jshell jstack jstat keytool
+BINARIES := jar jarsigner java javac javadoc javap jcmd jconsole jdb jdeprscan jdeps jfr jhsdb jimage jinfo jlink jmap jmod jnativescan jpackage jps jrunscript jshell jstack jstat jstatd jwebserver keytool rmiregistry serialver
 
 define build_binary
 ${CXX} ${CXXFLAGS} -o "${BIN}/${@}" "${SRC}/${TOOL}"
